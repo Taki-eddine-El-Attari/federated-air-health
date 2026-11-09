@@ -1,0 +1,44 @@
+\begin{tikzpicture}[
+  font=\small,
+  conteneur/.style={draw=#1!70!black, fill=#1!6, rounded corners=6pt, thick, inner sep=8pt},
+  api/.style={draw=black!70, fill=white, rounded corners=2pt, minimum width=5.2cm, minimum height=2.1cm, align=center},
+  base/.style={cylinder, shape border rotate=90, aspect=0.22, draw=black!70, fill=yellow!12, minimum width=3.4cm, minimum height=1.5cm, align=center},
+  labo/.style={draw=green!40!black, fill=green!8, rounded corners=6pt, thick, minimum width=6.4cm, minimum height=1.7cm, align=center},
+  fleche/.style={-{Latex[length=2.5mm]}, thick},
+  reponse/.style={-{Latex[length=2.5mm]}, thick, dashed},
+  note/.style={font=\footnotesize\hyphenpenalty 10000\relax, align=center},
+]
+  % Organisation A
+  \node[base] (dbA) at (-5,4.6) {\texttt{environnement.db}\\[-1pt]{\footnotesize pollution PM2.5}};
+  \node[api] (apiA) at (-5,2.1) {\textbf{API Environnement}\\port 8001\\[2pt]
+    \texttt{GET /catalog}\\\texttt{POST /contracts/negotiate}\\\texttt{GET /classifications}};
+  \draw[thick, black!60] (dbA.south) -- (apiA.north);
+  \node[font=\bfseries\footnotesize, blue!60!black] (titreA) at (-5,6.0) {Organisation A : Environnement};
+  \begin{scope}[on background layer]
+    \node[conteneur=blue, fit=(titreA)(dbA)(apiA)] (orgA) {};
+  \end{scope}
+
+  % Organisation B
+  \node[base] (dbB) at (5,4.6) {\texttt{hopital.db}\\[-1pt]{\footnotesize admissions par jour}};
+  \node[api] (apiB) at (5,2.1) {\textbf{API Hôpital}\\port 8002\\[2pt]
+    \texttt{POST /compute}\\calcul local, seuil de 3 jours,\\bruit et budget $\varepsilon$};
+  \draw[thick, black!60] (dbB.south) -- (apiB.north);
+  \node[font=\bfseries\footnotesize, red!60!black] (titreB) at (5,6.0) {Organisation B : Hôpital};
+  \begin{scope}[on background layer]
+    \node[conteneur=red, fit=(titreB)(dbB)(apiB)] (orgB) {};
+  \end{scope}
+
+  % Laboratoire
+  \node[labo] (lab) at (0,-3.1) {\textbf{Organisation C : Laboratoire}\\\texttt{client\_laboratoire.py}\\{\footnotesize coordonne l'analyse, n'ouvre jamais les bases}};
+
+  % Echanges avec A
+  \draw[fleche] (-3,-2.25) -- node[pos=0.5, right, note, align=left, text width=2.5cm] {(1) lire le catalogue\\[2pt](2) demander un contrat} ([xshift=2cm]apiA.south);
+  \draw[reponse] (apiA.south) |- node[pos=0.25, left, note, align=right, text width=2.5cm] {(3) dates, catégories et signature} (lab.west);
+
+  % Echanges avec B
+  \draw[fleche] (3,-2.25) -- node[pos=0.5, left, note, align=right, text width=2.5cm] {(4) paquet signé envoyé pour le calcul} ([xshift=-2cm]apiB.south);
+  \draw[reponse] (apiB.south) |- node[pos=0.25, right, note, align=left, text width=2.5cm] {(5) résultats : nombre de jours, moyenne, statut} (lab.east);
+
+  % Entre A et B
+  \node[note, text width=3.2cm] at (0,3.9) {\textbf{Pas de lien direct entre A et B}\\[3pt]Un secret partagé permet à B de vérifier la signature de A\\[3pt]Les deux bases restent chez leur propriétaire};
+\end{tikzpicture}

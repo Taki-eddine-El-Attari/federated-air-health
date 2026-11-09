@@ -1,0 +1,21 @@
+# Données sources : l'archive contient des fichiers par patient
+donnees_sao_paulo/
+
+# Environnements et outils locaux
+.venv/
+__pycache__/
+Rapport/outils_tectonic/
+Rapport/*.log
+
+# Fichiers de rendu et notes personnelles
+Mini_Projet_Data_Spaces.zip
+README.txt
+Infos_questions_TP.md
+Rapport/main.pdf
+Rapport/main.tex
+Support_TP1_TP4_*.pdf
+
+# Claude
+.claude/
+CLAUDE.md
+CLAUDE.local.md

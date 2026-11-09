@@ -1,0 +1,35 @@
+\begin{tikzpicture}[
+  font=\small,
+  acteur/.style={draw=#1!70!black, fill=#1!10, rounded corners=3pt, thick, minimum width=3.3cm, minimum height=0.9cm, align=center, font=\small\bfseries},
+  ligne/.style={black!45, densely dotted, thick},
+  req/.style={-{Latex[length=2.5mm]}, thick},
+  rep/.style={-{Latex[length=2.5mm]}, thick, dashed},
+  msg/.style={above, font=\footnotesize, align=center},
+  verif/.style={draw=black!50, fill=yellow!12, font=\footnotesize, align=left, text width=3.9cm, inner sep=4pt},
+]
+  \def\xC{0} \def\xA{6.3} \def\xB{12.6}
+
+  \node[acteur=green] (C) at (\xC,0) {C : Laboratoire};
+  \node[acteur=blue]  (A) at (\xA,0) {A : Environnement};
+  \node[acteur=red]   (B) at (\xB,0) {B : Hôpital};
+  \draw[ligne] (C.south) -- (\xC,-12.2);
+  \draw[ligne] (A.south) -- (\xA,-12.2);
+  \draw[ligne] (B.south) -- (\xB,-12.2);
+
+  \draw[req] (\xC,-1.3) -- node[msg] {1. \texttt{GET /catalog}} (\xA,-1.3);
+  \draw[rep] (\xA,-2.1) -- node[msg] {description du jeu de données} (\xC,-2.1);
+
+  \draw[req] (\xC,-3.2) -- node[msg] {2. \texttt{POST /contracts/negotiate}} (\xA,-3.2);
+  \node[verif, anchor=north west] at (\xA+0.25,-2.85) {A vérifie : clé, jeu de données, finalité, consommateur. Puis il crée le contrat.};
+  \draw[rep] (\xA,-4.3) -- node[msg] {\texttt{contract\_id}} (\xC,-4.3);
+
+  \draw[req] (\xC,-5.5) -- node[msg] {3. \texttt{GET /classifications}} (\xA,-5.5);
+  \draw[rep] (\xA,-6.4) -- node[msg] {dates, catégories et signature HMAC} (\xC,-6.4);
+
+  \draw[req] (\xC,-7.8) -- node[msg, pos=0.5] {4. \texttt{POST /compute} : le paquet signé, sans modification} (\xB,-7.8);
+  \node[verif, anchor=north east] at (\xB-0.25,-8.1) {B vérifie : clé, signature, dates, budget. Puis il calcule dans sa propre base.};
+
+  \draw[rep] (\xB,-10.7) -- node[msg, pos=0.5] {5. nombre de jours, moyenne et statut, jamais les lignes} (\xC,-10.4);
+
+  \node[font=\footnotesize, align=left, anchor=west, text width=5.5cm] at (\xC+0.2,-11.6) {Le laboratoire compare les deux moyennes.};
+\end{tikzpicture}
